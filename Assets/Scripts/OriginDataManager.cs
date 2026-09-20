@@ -6,7 +6,7 @@ public class OriginDataManager : MonoBehaviour
 {
     public static OriginDataManager Instance;
 
-    [SerializeField] private List<ItemData> itemDataList;
+    [SerializeField] private List<ItemData> itemDatas;
 
     private Dictionary<string, ItemData> itemDict;
 
@@ -16,7 +16,7 @@ public class OriginDataManager : MonoBehaviour
         transform.SetParent(null);
         DontDestroyOnLoad(gameObject);
 
-        itemDict = itemDataList.ToDictionary(x => x.Id, x => x);
+        itemDict = itemDatas.ToDictionary(x => x.Id, x => x);
     }
 
     public ItemData GetItem(string id)

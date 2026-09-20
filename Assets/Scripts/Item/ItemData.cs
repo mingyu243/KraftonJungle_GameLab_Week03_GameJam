@@ -1,0 +1,58 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+[CreateAssetMenu(menuName = "OriginData/ItemData")]
+public class ItemData : ScriptableObject
+{
+    public string Id;
+    public string Name;
+    public string Description;
+    public int MaxStack;
+
+    public ItemCateogry Category;
+
+    public List<EffectData> EffectDatas;
+
+    public ItemInstance CreateInstance()
+    {
+        ItemInstance instance = new ItemInstance()
+        {
+            Data = this,
+            EffectInstances = new List<EffectInstance>()
+        };
+
+        foreach (EffectData effectData in EffectDatas)
+        {
+            instance.EffectInstances.Add(effectData.CreateInstance());
+        }
+
+        return instance;
+    }
+}
+
+[CreateAssetMenu(menuName = "OriginData/MainWeaponData")]
+public class MainWeaponData : ItemData
+{
+
+}
+
+[CreateAssetMenu(menuName = "OriginData/SubWeaponData")]
+public class SubWeaponData : ItemData
+{
+    public int damage;
+}
+
+public class ItemInstance
+{
+    public ItemData Data;
+    public List<EffectInstance> EffectInstances;
+}
+
+public enum ItemCateogry
+{
+    None,
+    Gun, // 총
+    Ammo, // 탄약
+    SubWeapon, // 보조 무기
+    Heal // 회복
+}

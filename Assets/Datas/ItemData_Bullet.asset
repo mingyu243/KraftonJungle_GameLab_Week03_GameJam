@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ItemData_Bullet
   m_EditorClassIdentifier: 
   Id: bullet
-  Name: "\uCD1D\uC54C"
+  Name: "\uD0C4\uC57D"
   Description: "\uC5B4\uB514\uC11C\uB098 \uD754\uD788 \uBCFC \uC218 \uC788\uB294
     \uD3C9\uBC94\uD55C \uD0C4\uC57D."
   MaxStack: 30

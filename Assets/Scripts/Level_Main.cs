@@ -18,6 +18,9 @@ public class Level_Main : MonoBehaviour
     [SerializeField] private SplineContainer rail;
     [SerializeField] private float railMoveSpeed = 5.0f;
 
+    //[Header("State")]
+    //[SerializeField] private bool isShelter
+
     void Start()
     {
         GameFlowAsync().Forget();
