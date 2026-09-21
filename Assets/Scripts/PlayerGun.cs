@@ -102,6 +102,10 @@ public class PlayerGun : MonoBehaviour
                 {
                     Destroy(enemy1Controller.gameObject);
                 }
+                else if (hit.collider.TryGetComponent<Enemy2Controller>(out Enemy2Controller enemy2Controller))
+                {
+                    Destroy(enemy2Controller.gameObject);
+                }
             }
 
             // 카메라 impulseSource 로 위로 한번 탕 튀어주기

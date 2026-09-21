@@ -185,7 +185,7 @@ public class PlayerController : MonoBehaviour
 
         // 피격당한 방향으로 흔들기
         Vector3 hitDir = (transform.position - attackerTr.position).normalized;
-        impulseSource.GenerateImpulse(hitDir);
+        impulseSource.GenerateImpulse(hitDir * 1.5f);
 
         // 피격 후 잠시 무적
         UniTask.Void(async () =>

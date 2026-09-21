@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -240,11 +241,30 @@ public class ShelterScreen : MonoBehaviour, IUIScreen
                     LeftButtonText = "꺼내기",
                     OnClickLeftButton = () =>
                     {
-                        // 아이템 옮기기
-                        InventoryManager.Instance.PlayerInventory.AddItemStack(targetItemStack);
-                        InventoryManager.Instance.PlayerStorage.RemoveItemStack(targetItemStack);
+                        // 공간이 있으면
+                        if (InventoryManager.Instance.PlayerInventory.ItemStacks.Count < InventoryManager.Instance.PlayerInventory.Capacity)
+                        {
+                            // 아이템 옮기기
+                            InventoryManager.Instance.PlayerInventory.AddItemStack(targetItemStack);
+                            InventoryManager.Instance.PlayerStorage.RemoveItemStack(targetItemStack);
 
-                        UIManager.Instance.ClosePopup(UIPopupType.Confirm);
+                            UIManager.Instance.ClosePopup(UIPopupType.Confirm);
+                        }
+                        else
+                        {
+                            // 공간이 없어도 탄약인 경우 한번 더 체크
+                            if (targetItemStack.ItemInstance.ItemData.Category == ItemCateogry.Ammo)
+                            {
+                                if (InventoryManager.Instance.PlayerInventory.ContainsItem("bullet"))
+                                {
+                                    // 아이템 옮기기
+                                    InventoryManager.Instance.PlayerInventory.AddItemStack(targetItemStack);
+                                    InventoryManager.Instance.PlayerStorage.RemoveItemStack(targetItemStack);
+
+                                    UIManager.Instance.ClosePopup(UIPopupType.Confirm);
+                                }
+                            }
+                        }
                     },
                     RightButtonText = "취소",
                     OnClickRightButton = () =>
