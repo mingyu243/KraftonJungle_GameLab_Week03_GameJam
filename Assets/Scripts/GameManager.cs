@@ -4,11 +4,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
+    public Level_Main Level_Main;
     public PlayerController PlayerController;
-
-    [Header("Runtime")]
-    public int CurrentStageNumber;
-    public int CurrentPlayerHealth; // 정상 (Fine), 주의 (Caution), 위험 (Danger) 
 
     void Awake()
     {

@@ -12,7 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f203b0249c73da040b27bb8a778d4bc7, type: 3}
   m_Name: ItemData_GreenHerb
   m_EditorClassIdentifier: 
-  Id: green_hub
+  Id: green_herb
   Name: "\uB179\uC0C9 \uC57D\uCD08"
+  Icon: {fileID: 21300000, guid: 4d6aecf4e09814c41b1f8986ede2a853, type: 3}
   Description: "\uAC04\uB2E8\uD55C \uC0C1\uCC98\uB97C \uB0AB\uAC8C \uD558\uB294 \uD6A8\uACFC\uAC00
     \uC788\uB294 \uC57D\uCD08."
+  MaxStack: 1
+  Category: 4
+  EffectDatas: []

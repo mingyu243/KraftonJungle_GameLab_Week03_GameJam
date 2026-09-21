@@ -6,9 +6,9 @@ public class ItemData : ScriptableObject
 {
     public string Id;
     public string Name;
+    public Sprite Icon;
     public string Description;
-    public int MaxStack;
-
+    
     public ItemCateogry Category;
 
     public List<EffectData> EffectDatas;
@@ -17,7 +17,7 @@ public class ItemData : ScriptableObject
     {
         ItemInstance instance = new ItemInstance()
         {
-            Data = this,
+            ItemData = this,
             EffectInstances = new List<EffectInstance>()
         };
 
@@ -44,14 +44,14 @@ public class SubWeaponData : ItemData
 
 public class ItemInstance
 {
-    public ItemData Data;
+    public ItemData ItemData;
     public List<EffectInstance> EffectInstances;
 }
 
 public enum ItemCateogry
 {
     None,
-    Gun, // 총
+    Gun, // 주 무기
     Ammo, // 탄약
     SubWeapon, // 보조 무기
     Heal // 회복

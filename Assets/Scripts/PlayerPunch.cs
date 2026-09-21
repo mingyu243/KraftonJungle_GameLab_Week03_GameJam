@@ -1,8 +1,14 @@
-using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
+
+public enum PunchState
+{
+    None,
+    Charging,
+    Punch,
+    Return
+}
 
 public class PlayerPunch : MonoBehaviour
 {
@@ -16,21 +22,21 @@ public class PlayerPunch : MonoBehaviour
     [SerializeField] private float minForwardRange = 1f;
     [SerializeField] private float maxForwardRange = 2f;
     [Space]
-    [SerializeField] private Vector3 forceDir = new Vector3(0, 0.3f, 1f);
+    [SerializeField] private Vector3 forceDir = new Vector3(0, 1f, 1f);
     [SerializeField] private float minForce = 3f;
-    [SerializeField] private float maxForce = 5f;
+    [SerializeField] private float maxForce = 10f;
     [Space]
-    [SerializeField] private float minAfterDelay = 1f;
-    [SerializeField] private float maxAfterDelay = 2f;
+    [SerializeField] private float minAfterDelay = 0.2f;
+    [SerializeField] private float maxAfterDelay = 0.4f;
     [Space]
     [SerializeField] private float minEnemyStunDuration = 1f;
     [SerializeField] private float maxEnemyStunDuration = 2f;
     [Space]
-    [SerializeField] private float minPunchDuration = 1f;
-    [SerializeField] private float maxPunchDuration = 2f;
+    [SerializeField] private float minPunchDuration = 0.15f;
+    [SerializeField] private float maxPunchDuration = 0.15f;
     [Space]
-    [SerializeField] private Vector3 minTargetPos;
-    [SerializeField] private Vector3 maxTargetPos;
+    [SerializeField] private Vector3 minTargetPos = new Vector3(-0.5f, 0.3f, 1.5f);
+    [SerializeField] private Vector3 maxTargetPos = new Vector3(-0.5f, 0.3f, 2f);
     [Space]
     [SerializeField] private float minHitStopDuration = 0.05f;
     [SerializeField] private float maxHitStopDuration = 0.2f;
@@ -38,14 +44,16 @@ public class PlayerPunch : MonoBehaviour
     [SerializeField] private float maxPower = 3f;
     [Space]
     [SerializeField] private float chargingMoveSpeed = 3f;
+    [Space]
+    [SerializeField] private int maxPushCount = 1;
 
     [Header("Runtime")]
     [SerializeField] private float currentPower = 0;
-    [SerializeField] private bool isCharging = false;
-    [SerializeField] private bool isPunching = false;
+    [SerializeField] private PunchState punchState = PunchState.None;
 
     public float PunchMoveSpeed => chargingMoveSpeed;
-    public bool UsePunching => isCharging || isPunching;
+    public bool UsePunching => (punchState != PunchState.None);
+    public PunchState PunchState => punchState;
 
     public float CurrentPower => Mathf.Clamp(currentPower, 0f, maxPower);
     public float PowerRatio => Mathf.Clamp01(currentPower / maxPower);
@@ -61,8 +69,7 @@ public class PlayerPunch : MonoBehaviour
 
     void Start()
     {
-        isCharging = false;
-        isPunching = false;
+        punchState = PunchState.None;
         currentPower = 0f;
         hitEnemies.Clear();
         punchCollider.enabled = false;
@@ -72,9 +79,10 @@ public class PlayerPunch : MonoBehaviour
     void Update()
     {
         // 게이지 충전
-        if (isCharging)
+        if (punchState == PunchState.Charging)
         {
             currentPower += Time.deltaTime;
+
         }
 
         // 사이즈 조절
@@ -84,13 +92,19 @@ public class PlayerPunch : MonoBehaviour
     private HashSet<Enemy1Controller> hitEnemies = new();
     private void OnTriggerStay(Collider other)
     {
-        if (!isPunching)
+        if (punchState != PunchState.Punch)
         {
             return;
         }
 
         if (other.gameObject.TryGetComponent<Enemy1Controller>(out Enemy1Controller enemyController))
         {
+            // 한번에 밀 수 있는 개수
+            if (hitEnemies.Count >= maxPushCount)
+            {
+                return;
+            }
+
             // 중복이면 무시
             if (hitEnemies.Contains(enemyController))
             {
@@ -100,34 +114,18 @@ public class PlayerPunch : MonoBehaviour
             hitEnemies.Add(enemyController);
 
             enemyController.ApplyKnockback(CurrentForce);
-
-            //float currentHitStopDuration = Mathf.Lerp(minHitStopDuration, maxHitStopDuration, t);
-            //UniTask.Void(async () =>
-            //{
-            //    punchCollider.enabled = false;
-            //    Time.timeScale = 0f;
-
-            //    await UniTask.WaitForSeconds(currentHitStopDuration, true);
-
-            //    punchCollider.enabled = true;
-            //    Time.timeScale = 1f;
-            //});
-
-            // 맞출 때마다 파워 감소
-            currentPower *= 0.5f;
         }
     }
 
     public void StartCharging()
     {
         // 펀치 중이면 안 됨
-        if (isPunching)
+        if (UsePunching)
         {
             return;
         }
 
-        isCharging = true;
-        isPunching = false;
+        punchState = PunchState.Charging;
         currentPower = 0f;
         hitEnemies.Clear();
         visual.SetActive(true);
@@ -136,13 +134,12 @@ public class PlayerPunch : MonoBehaviour
     public void ReleasePunch()
     {
         // 차징 중이 아니었으면 안 됨
-        if (isCharging == false)
+        if (punchState != PunchState.Charging)
         {
             return;
         }
 
-        isCharging = false;
-        isPunching = true;
+        punchState = PunchState.Punch;
         hitEnemies.Clear();
         punchCollider.enabled = true;
 
@@ -156,7 +153,7 @@ public class PlayerPunch : MonoBehaviour
         punchSequence.OnComplete(() =>
         {
             GameManager.Instance.PlayerController.LockRotation = false;
-
+            punchState = PunchState.None;
             currentPower = 0f;
             visual.SetActive(false);
         });
@@ -164,8 +161,7 @@ public class PlayerPunch : MonoBehaviour
 
     public void EndPunch()
     {
-        isCharging = false;
-        isPunching = false;
+        punchState = PunchState.Return;
         hitEnemies.Clear();
         punchCollider.enabled = false;
     }

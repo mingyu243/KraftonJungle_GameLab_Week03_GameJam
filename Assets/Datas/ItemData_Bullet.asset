@@ -14,6 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: bullet
   Name: "\uD0C4\uC57D"
+  Icon: {fileID: 21300000, guid: 95f146e3bc4eee94fa23382d46ee6dc1, type: 3}
   Description: "\uC5B4\uB514\uC11C\uB098 \uD754\uD788 \uBCFC \uC218 \uC788\uB294
     \uD3C9\uBC94\uD55C \uD0C4\uC57D."
   MaxStack: 30
+  Category: 2
+  EffectDatas: []

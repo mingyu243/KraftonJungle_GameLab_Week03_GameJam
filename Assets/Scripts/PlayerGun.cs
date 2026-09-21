@@ -13,6 +13,12 @@ public class PlayerGun : MonoBehaviour
     public float AimMoveSpeed => aimMoveSpeed;
     public bool IsAiming => isAiming;
 
+    void Start()
+    {
+        isAiming = false;
+        visual.SetActive(false);
+    }
+
     public void StartAiming()
     {
         if (IsAiming)
@@ -24,9 +30,6 @@ public class PlayerGun : MonoBehaviour
         isAiming = true;
         visual.SetActive(true);
         CameraManager.Instance.SwitchCamera(CameraType.MainWeaponAim);
-
-        // 총 쏘기
-        Vector3 forward = CameraManager.Instance.CameraTr.forward;
 
         // 총 이펙트
 

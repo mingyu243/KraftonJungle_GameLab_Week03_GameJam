@@ -1,13 +1,21 @@
+using Cysharp.Threading.Tasks;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("Health")]
+    public int MaxHp = 3;
+    [SerializeField] private bool isInvincible = false;
+    [SerializeField] public float invincibilityDuration = 1.0f;
+    [SerializeField] private CinemachineImpulseSource impulseSource;
+
     [Header("Move")]
     [SerializeField] private Rigidbody rb;
-    [SerializeField] private float moveSpeed;
-    [SerializeField] private float sprintMoveSpeed;
-    [SerializeField] private float rotationSpeed;
+    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private float sprintMoveSpeed = 7f;
+    [SerializeField] private float rotationSpeed = 10f;
     [SerializeField] private CartInteractor cartRider;
 
     [Header("Gun")]
@@ -17,6 +25,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerPunch punch;
 
     [Header("Runtime")]
+    public int CurrentHp;
     public bool LockMove = false;
     public bool LockRotation = false;
     [SerializeField] private Vector2 moveInput;
@@ -37,6 +46,11 @@ public class PlayerController : MonoBehaviour
         InputManager.Instance.OnSprint -= OnSprint;
         InputManager.Instance.OnAim -= OnAim;
         InputManager.Instance.OnAttack -= OnAttack;
+    }
+
+    public void Init()
+    {
+        CurrentHp = MaxHp;
     }
 
     void OnMove(InputAction.CallbackContext ctx)
@@ -86,11 +100,15 @@ public class PlayerController : MonoBehaviour
             }
             else if (ctx.canceled)
             {
+                Vector3 camForward = CameraManager.Instance.CameraTr.forward;
+                camForward.y = 0f;
+                camForward.Normalize();
+
+                transform.rotation = Quaternion.LookRotation(camForward);
                 punch.ReleasePunch();
             }
         }
     }
-
 
     void FixedUpdate()
     {
@@ -116,7 +134,7 @@ public class PlayerController : MonoBehaviour
         {
             currentSpeed = gun.AimMoveSpeed;
         }
-        else if (punch.UsePunching) // 펀치 사용 중이면
+        else if (punch.PunchState == PunchState.Charging) // 펀치 사용 중이면
         {
             currentSpeed = punch.PunchMoveSpeed;
         }
@@ -156,5 +174,27 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void TakeDamage(Transform attackerTr, int damage)
+    {
+        if (isInvincible)
+        {
+            return;
+        }
+
+        CurrentHp -= damage;
+
+        // 피격당한 방향으로 흔들기
+        Vector3 hitDir = (transform.position - attackerTr.position).normalized;
+        impulseSource.GenerateImpulse(hitDir);
+
+        // 피격 후 잠시 무적
+        UniTask.Void(async () =>
+        {
+            isInvincible = true;
+            await UniTask.WaitForSeconds(0.5f);
+            isInvincible = false;
+        });
     }
 }

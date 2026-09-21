@@ -12,7 +12,7 @@ public class CartInteractor : MonoBehaviour
     public bool CanJump;
     [SerializeField] private float jumpPower = 2f;
     [SerializeField] private float jumpDuration = 0.5f;
-    private Tweener currentJumpTween;
+    private Tween currentJumpTween;
 
     [Header("Runtime")]
     public bool IsRiding;
@@ -57,15 +57,31 @@ public class CartInteractor : MonoBehaviour
             return;
         }
 
-        IsJumping = true;
-        rb.isKinematic = true; // 점프 중 물리 영향 차단
+        currentJumpTween?.Kill();
 
-        transform.DOJump(landingPoint.position, jumpPower, 1, jumpDuration)
+        currentJumpTween = transform.DOJump(landingPoint.position, jumpPower, 1, jumpDuration)
             .SetEase(Ease.OutQuad)
+            .OnStart(() =>
+            {
+                IsJumping = true;
+                rb.isKinematic = true; // 점프 중 물리 영향 차단
+            })
             .OnComplete(() =>
             {
                 IsJumping = false;
                 rb.isKinematic = false;
+                currentJumpTween = null;
+            })
+            .OnKill(() =>
+            {
+                IsJumping = false;
+                rb.isKinematic = false;
+                currentJumpTween = null;
             });
+    }
+
+    public void CancelJump()
+    {
+        currentJumpTween?.Kill();
     }
 }

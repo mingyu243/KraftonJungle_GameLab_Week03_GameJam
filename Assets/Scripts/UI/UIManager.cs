@@ -7,13 +7,14 @@ public enum UIScreenType
 {
     None,
     HUD,
-    Inventory,
-    Storage
+    Shelter,
+    End
 }
 
 public enum UIPopupType
 {
     None,
+    Inventory,
     Confirm,
 }
 
@@ -54,7 +55,6 @@ public class UIManager : MonoBehaviour
     private Dictionary<UIScreenType, GameObject> screenDict;
     private Dictionary<UIPopupType, GameObject> popupDict;
 
-
     void Awake()
     {
         Instance = this;
@@ -73,6 +73,8 @@ public class UIManager : MonoBehaviour
 
     // 교체 방식의 UI
     private UIScreenType currentScreenType = UIScreenType.None;
+
+    public UIScreenType CurrentScreenType => currentScreenType;
 
     public void OpenScreen(UIScreenType type, object data = null)
     {
@@ -99,6 +101,11 @@ public class UIManager : MonoBehaviour
     // 스택 방식의 UI
     private List<UIPopupType> popupStack = new();
 
+    public bool IsPopupOpen(UIPopupType type)
+    {
+        return (popupStack.Contains(type));
+    }
+
     public void OpenPopup(UIPopupType type, object data = null)
     {
         if (popupStack.Contains(type))
@@ -121,7 +128,7 @@ public class UIManager : MonoBehaviour
             return;
         }
 
-        var type = popupStack[^1]; // 마지막 요소
+        var type = popupStack[(popupStack.Count - 1)];
         ClosePopup(type);
     }
 

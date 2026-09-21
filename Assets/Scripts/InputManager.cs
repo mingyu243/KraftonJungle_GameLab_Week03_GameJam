@@ -41,9 +41,6 @@ public class InputManager : MonoBehaviour
         inputActions.Player.Attack.started += Attack;
         inputActions.Player.Attack.canceled += Attack;
 
-        inputActions.Player.SubWeapon.started += SubWeapon;
-        inputActions.Player.SubWeapon.canceled += SubWeapon;
-
         inputActions.Player.Inventory.started += Inventory;
         inputActions.Player.Inventory.canceled += Inventory;
     }
@@ -65,9 +62,6 @@ public class InputManager : MonoBehaviour
         inputActions.Player.Attack.started -= Attack;
         inputActions.Player.Attack.canceled -= Attack;
 
-        inputActions.Player.SubWeapon.started -= SubWeapon;
-        inputActions.Player.SubWeapon.canceled -= SubWeapon;
-
         inputActions.Player.Inventory.started -= Inventory;
         inputActions.Player.Inventory.canceled -= Inventory;
     }
@@ -76,6 +70,5 @@ public class InputManager : MonoBehaviour
     private void Sprint(InputAction.CallbackContext ctx) => OnSprint?.Invoke(ctx);
     private void Aim(InputAction.CallbackContext ctx) => OnAim?.Invoke(ctx);
     private void Attack(InputAction.CallbackContext ctx) => OnAttack?.Invoke(ctx);
-    private void SubWeapon(InputAction.CallbackContext ctx) => OnSubWeapon?.Invoke(ctx);
     private void Inventory(InputAction.CallbackContext ctx) => OnInventory?.Invoke(ctx);
 }
