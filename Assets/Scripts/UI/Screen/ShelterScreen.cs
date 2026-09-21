@@ -107,6 +107,8 @@ public class ShelterScreen : MonoBehaviour, IUIScreen
 
     public void Close()
     {
+        InventoryManager.Instance.OnInventoryChanged -= OnInventoryChanged;
+
         Time.timeScale = 1f;
         GameManager.Instance.SetVisibleCursor(false);
 

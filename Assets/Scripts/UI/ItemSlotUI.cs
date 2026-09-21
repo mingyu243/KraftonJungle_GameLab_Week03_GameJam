@@ -9,7 +9,7 @@ public class ItemSlotUI : MonoBehaviour
         ItemUI.IconImage.gameObject.SetActive(true);
         ItemUI.IconImage.sprite = itemStack.ItemInstance.ItemData.Icon;
 
-        if (itemStack.Count > 1)
+        if (itemStack.ItemInstance.ItemData.Category == ItemCateogry.Ammo)
         {
             ItemUI.CountText.text = $"x{itemStack.Count}";
         }

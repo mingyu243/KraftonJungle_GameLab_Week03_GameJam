@@ -73,8 +73,6 @@ public class PlayerController : MonoBehaviour
         if (ctx.started)
         {
             gun.StartAiming();
-
-
         }
         if (ctx.canceled)
         {

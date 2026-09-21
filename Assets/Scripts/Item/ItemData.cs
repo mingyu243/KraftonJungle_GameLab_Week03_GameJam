@@ -11,20 +11,12 @@ public class ItemData : ScriptableObject
     
     public ItemCateogry Category;
 
-    public List<EffectData> EffectDatas;
-
     public ItemInstance CreateInstance()
     {
         ItemInstance instance = new ItemInstance()
         {
             ItemData = this,
-            EffectInstances = new List<EffectInstance>()
         };
-
-        foreach (EffectData effectData in EffectDatas)
-        {
-            instance.EffectInstances.Add(effectData.CreateInstance());
-        }
 
         return instance;
     }
@@ -45,7 +37,6 @@ public class SubWeaponData : ItemData
 public class ItemInstance
 {
     public ItemData ItemData;
-    public List<EffectInstance> EffectInstances;
 }
 
 public enum ItemCateogry

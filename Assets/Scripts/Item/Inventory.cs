@@ -35,6 +35,34 @@ public class Inventory
         InventoryManager.Instance.NotifyInventoryChange();
     }
 
+    public ItemStack GetItem(string itemId)
+    {
+        for (int i = 0; i < ItemStacks.Count; i++)
+        {
+            // 이미 있는 아이템이라면
+            if (ItemStacks[i].ItemInstance.ItemData.Id == itemId)
+            {
+                return ItemStacks[i];
+            }
+        }
+
+        return null;
+    }
+
+    public bool ContainsItem(string itemId)
+    {
+        for (int i = 0; i < ItemStacks.Count; i++)
+        {
+            // 이미 있는 아이템이라면
+            if (ItemStacks[i].ItemInstance.ItemData.Id == itemId)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void UseItem(string itemId)
     {
         for (int i = 0; i < ItemStacks.Count; i++)

@@ -14,6 +14,7 @@ public class InputManager : MonoBehaviour
     public event Action<InputAction.CallbackContext> OnAttack;
     public event Action<InputAction.CallbackContext> OnSubWeapon;
     public event Action<InputAction.CallbackContext> OnInventory;
+    public event Action<InputAction.CallbackContext> OnReload;
 
     void Awake()
     {
@@ -71,4 +72,5 @@ public class InputManager : MonoBehaviour
     private void Aim(InputAction.CallbackContext ctx) => OnAim?.Invoke(ctx);
     private void Attack(InputAction.CallbackContext ctx) => OnAttack?.Invoke(ctx);
     private void Inventory(InputAction.CallbackContext ctx) => OnInventory?.Invoke(ctx);
+    private void Reload(InputAction.CallbackContext ctx) => OnReload?.Invoke(ctx);
 }
