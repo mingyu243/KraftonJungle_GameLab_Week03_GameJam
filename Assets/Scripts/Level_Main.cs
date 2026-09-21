@@ -195,9 +195,9 @@ public class Level_Main : MonoBehaviour
     {
         List<ItemStack> supllies = new();
 
-        supllies.Add(new ItemStack(OriginDataManager.Instance.GetItem("bullet").CreateInstance(), Random.Range(1, 3)));
+        supllies.Add(new ItemStack(OriginDataManager.Instance.GetItem("bullet").CreateInstance(), Random.Range(2, 5)));
 
-        int rand = Random.Range(0, 4);
+        int rand = Random.Range(0, 2);
         if (rand == 0)
         {
             supllies.Add(new ItemStack(OriginDataManager.Instance.GetItem("green_herb").CreateInstance(), 1));
