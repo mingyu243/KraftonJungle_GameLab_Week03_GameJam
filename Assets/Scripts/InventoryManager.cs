@@ -14,7 +14,7 @@ public class InventoryManager : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private int supplyBoxBaseCapacity = 5;
     [SerializeField] private int inventoryBaseCapacity = 3;
-    [SerializeField] private int storageBaseCapacity = 15;
+    [SerializeField] private int storageBaseCapacity = 40;
 
     public event Action OnInventoryChanged;
 

@@ -104,7 +104,7 @@ public class EndScreen : MonoBehaviour, IUIScreen
             {
                 tooltip.transform.position = itemUI.transform.position;
                 tooltipTitleText.text = targetItemStack.ItemInstance.ItemData.Name;
-                tooltipDescriptionText.text = targetItemStack.ItemInstance.ItemData.Description;
+                tooltipDescriptionText.text = targetItemStack.ItemInstance.Description;
 
                 tooltip.SetActive(true);
             };
@@ -134,7 +134,7 @@ public class EndScreen : MonoBehaviour, IUIScreen
             {
                 tooltip.transform.position = itemUI.transform.position;
                 tooltipTitleText.text = targetItemStack.ItemInstance.ItemData.Name;
-                tooltipDescriptionText.text = targetItemStack.ItemInstance.ItemData.Description;
+                tooltipDescriptionText.text = targetItemStack.ItemInstance.Description;
 
                 tooltip.SetActive(true);
             };

@@ -35,12 +35,12 @@ public class Inventory
         InventoryManager.Instance.NotifyInventoryChange();
     }
 
-    public ItemStack GetItem(string itemId)
+    public ItemStack GetItem(string itemInstanceId)
     {
         for (int i = 0; i < ItemStacks.Count; i++)
         {
             // 이미 있는 아이템이라면
-            if (ItemStacks[i].ItemInstance.ItemData.Id == itemId)
+            if (ItemStacks[i].ItemInstance.Id == itemInstanceId)
             {
                 return ItemStacks[i];
             }
@@ -49,12 +49,12 @@ public class Inventory
         return null;
     }
 
-    public bool ContainsItem(string itemId)
+    public bool ContainsItem(string itemInstanceId)
     {
         for (int i = 0; i < ItemStacks.Count; i++)
         {
             // 이미 있는 아이템이라면
-            if (ItemStacks[i].ItemInstance.ItemData.Id == itemId)
+            if (ItemStacks[i].ItemInstance.Id == itemInstanceId)
             {
                 return true;
             }
@@ -63,12 +63,12 @@ public class Inventory
         return false;
     }
 
-    public void UseItem(string itemId)
+    public void UseItem(string itemInstanceId)
     {
         for (int i = 0; i < ItemStacks.Count; i++)
         {
             // 이미 있는 아이템이라면
-            if (ItemStacks[i].ItemInstance.ItemData.Id == itemId)
+            if (ItemStacks[i].ItemInstance.Id == itemInstanceId)
             {
                 ItemStacks[i].Count--;
                 if (ItemStacks[i].Count == 0)

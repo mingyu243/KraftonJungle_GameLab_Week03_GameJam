@@ -52,7 +52,7 @@ MonoBehaviour:
   rb: {fileID: 7967280632543463320}
   enemyCollider: {fileID: 7056408625059407390}
   cartInteractor: {fileID: 3758664919263551132}
-  moveSpeed: 2.5
+  moveSpeed: 3.5
   attackRange: 5
   attackDuration: 0.5
   attackChargeDuration: 2

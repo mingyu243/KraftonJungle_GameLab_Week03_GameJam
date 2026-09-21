@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Move")]
     [SerializeField] private Rigidbody rb;
-    [SerializeField] private float moveSpeed = 5f;
+    public float MoveSpeed = 5f;
     [SerializeField] private float sprintMoveSpeed = 7f;
     [SerializeField] private float rotationSpeed = 10f;
     [SerializeField] private CartInteractor cartRider;
@@ -126,7 +126,7 @@ public class PlayerController : MonoBehaviour
         camRight.Normalize();
 
         // 이동 속도
-        currentSpeed = moveSpeed;
+        currentSpeed = MoveSpeed;
 
         if (gun.IsAiming) // 총 사용 중이면
         {

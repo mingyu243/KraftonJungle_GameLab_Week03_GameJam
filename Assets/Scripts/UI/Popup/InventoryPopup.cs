@@ -66,6 +66,14 @@ public class InventoryPopup : MonoBehaviour, IUIPopup
 
     private void OnInventoryChanged()
     {
+        // 체력
+        foreach (var item in hpObjects)
+        {
+            item.SetActive(false);
+        }
+        int index = GameManager.Instance.PlayerController.CurrentHp - 1;
+        hpObjects[index].SetActive(true);
+
         // 인벤토리
 
         // 슬롯 다 비우고
@@ -87,7 +95,7 @@ public class InventoryPopup : MonoBehaviour, IUIPopup
             {
                 tooltip.transform.position = itemUI.transform.position;
                 tooltipTitleText.text = targetItemStack.ItemInstance.ItemData.Name;
-                tooltipDescriptionText.text = targetItemStack.ItemInstance.ItemData.Description;
+                tooltipDescriptionText.text = targetItemStack.ItemInstance.Description;
 
                 tooltip.SetActive(true);
             };
@@ -109,14 +117,33 @@ public class InventoryPopup : MonoBehaviour, IUIPopup
                         LeftButtonText = "사용",
                         OnClickLeftButton = () =>
                         {
-                            // 풀피가 아니라면
-                            if (GameManager.Instance.PlayerController.CurrentHp < GameManager.Instance.PlayerController.MaxHp)
+                            // 슈퍼 스타
+                            if (targetItemStack.ItemInstance.Id == "star")
                             {
-                                // 아이템 사용 처리
-                                GameManager.Instance.PlayerController.CurrentHp++;
-                                InventoryManager.Instance.PlayerInventory.UseItem(targetItemStack.ItemInstance.ItemData.Id);
-                                
+                                GameManager.Instance.PlayerController.MoveSpeed = 30f;
+
+                                InventoryManager.Instance.PlayerInventory.UseItem(targetItemStack.ItemInstance.Id);
+
                                 UIManager.Instance.ClosePopup(UIPopupType.Confirm);
+                            }
+                            else
+                            {
+                                // 풀피가 아니라면
+                                if (GameManager.Instance.PlayerController.CurrentHp < GameManager.Instance.PlayerController.MaxHp)
+                                {
+                                    if (targetItemStack.ItemInstance.Id == "green_herb")
+                                    {
+                                        GameManager.Instance.PlayerController.CurrentHp++;
+                                    }
+                                    else if (targetItemStack.ItemInstance.Id == "red_herb")
+                                    {
+                                        GameManager.Instance.PlayerController.CurrentHp = GameManager.Instance.PlayerController.MaxHp;
+                                    }
+                                    // 아이템 사용 처리
+                                    InventoryManager.Instance.PlayerInventory.UseItem(targetItemStack.ItemInstance.Id);
+
+                                    UIManager.Instance.ClosePopup(UIPopupType.Confirm);
+                                }
                             }
                         },
                         RightButtonText = "취소",

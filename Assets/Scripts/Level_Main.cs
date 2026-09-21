@@ -15,7 +15,7 @@ public class Level_Main : MonoBehaviour
 {
     [Header("Cart")]
     [SerializeField] private CinemachineSplineCart splineCart;
-    [SerializeField] private float cartMoveSpeed = 5.0f;
+    [SerializeField] private float cartMoveSpeed = 3.0f;
 
     [Header("Shelter")]
     [SerializeField] private CinemachineSplineCart splineShelter;
@@ -24,8 +24,7 @@ public class Level_Main : MonoBehaviour
 
     [Header("Enemy1")]
     [SerializeField] private GameObject enemy1Prefab;
-    [SerializeField] private Transform enemy1SpawnPointA;
-    [SerializeField] private Transform enemy1SpawnPointB;
+    [SerializeField] private Transform[] enemy1SpawnPoints;
 
     [Header("Enemy2")]
     [SerializeField] private GameObject[] enemy2Prefabs;
@@ -59,12 +58,11 @@ public class Level_Main : MonoBehaviour
         UIManager.Instance.OpenScreen(UIScreenType.HUD);
 
         // 몬스터 생성
-        // 카트 위치에서 양쪽에서 2마리
-        GameObject go1 = Instantiate(enemy1Prefab);
-        go1.transform.position = enemy1SpawnPointA.transform.position;
-
-        GameObject go2 = Instantiate(enemy1Prefab);
-        go2.transform.position = enemy1SpawnPointB.transform.position;
+        for (int i = 0; i < enemy1SpawnPoints.Length; i++)
+        {
+            GameObject go = Instantiate(enemy1Prefab);
+            go.transform.position = enemy1SpawnPoints[i].transform.position;
+        }
     }
 
     void FixedUpdate()
@@ -97,9 +95,42 @@ public class Level_Main : MonoBehaviour
                 // 보급품 랜덤 생성
                 InventoryManager.Instance.SupplyBox.Clear();
                 List<ItemStack> supplies = MakeRandomSupplies();
+
+                // 첫 보상
+                if (NextShelterMeter == 50)
+                {
+                    // 랜덤 박스로 목표 제시?
+                    ItemInstance randomBox = OriginDataManager.Instance.GetItem("random_box").CreateHardCodingInstance();
+                    supplies.Add(new ItemStack(randomBox, 1));
+                }
                 for (int i = 0; i < supplies.Count; i++)
                 {
                     InventoryManager.Instance.SupplyBox.AddItemStack(supplies[i]);
+                }
+
+                // 아이템에 적용
+                List<ItemStack> itemStacks = InventoryManager.Instance.PlayerInventory.ItemStacks;
+                for (int i = itemStacks.Count - 1; i >= 0; i--)
+                {
+                    if (itemStacks[i].ItemInstance.ItemData.Category == ItemCateogry.RandomBox)
+                    {
+                        // 방금 간 거리만큼 적용
+                        itemStacks[i].ItemInstance.CurrentValue += 50;
+
+                        // 거리가 다 도달했다면
+                        if (itemStacks[i].ItemInstance.CurrentValue >= itemStacks[i].ItemInstance.GoalValue)
+                        {
+                            // 보상 다 주고
+                            foreach (var item in itemStacks[i].ItemInstance.RewardList)
+                            {
+                                ItemInstance temp = OriginDataManager.Instance.GetItem(item.itemId).CreateInstance();
+                                InventoryManager.Instance.PlayerStorage.AddItemStack(new ItemStack(temp, item.count));
+                            }
+
+                            // 자기 삭제
+                            InventoryManager.Instance.PlayerInventory.UseItem(itemStacks[i].ItemInstance.Id);
+                        }
+                    }
                 }
 
                 // 쉘터 UI 띄우기
@@ -117,12 +148,11 @@ public class Level_Main : MonoBehaviour
                 });
 
                 // enemy1 생성
-                // 카트 위치에서 양쪽에서 2마리
-                GameObject go1 = Instantiate(enemy1Prefab);
-                go1.transform.position = enemy1SpawnPointA.transform.position;
-
-                GameObject go2 = Instantiate(enemy1Prefab);
-                go2.transform.position = enemy1SpawnPointB.transform.position;
+                for (int i = 0; i < enemy1SpawnPoints.Length; i++)
+                {
+                    GameObject go = Instantiate(enemy1Prefab);
+                    go.transform.position = enemy1SpawnPoints[i].transform.position;
+                }
 
                 // 이전 enemy2 다 제거
                 Enemy2Controller[] enemies = FindObjectsByType<Enemy2Controller>(FindObjectsSortMode.None);
@@ -166,12 +196,18 @@ public class Level_Main : MonoBehaviour
     {
         List<ItemStack> supllies = new();
 
-        supllies.Add(new ItemStack(OriginDataManager.Instance.GetItem("bullet").CreateInstance(), Random.Range(1, 4)));
+        supllies.Add(new ItemStack(OriginDataManager.Instance.GetItem("bullet").CreateInstance(), Random.Range(1, 3)));
 
-        int rand = Random.Range(0, 5);
+        int rand = Random.Range(0, 4);
         if (rand == 0)
         {
             supllies.Add(new ItemStack(OriginDataManager.Instance.GetItem("green_herb").CreateInstance(), 1));
+        }
+
+        int rand2 = Random.Range(0, 2);
+        if (rand2 == 0)
+        {
+            supllies.Add(new ItemStack(OriginDataManager.Instance.GetItem("random_box").CreateInstance(), 1));
         }
 
         return supllies;
