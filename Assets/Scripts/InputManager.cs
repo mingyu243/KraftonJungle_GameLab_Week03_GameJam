@@ -12,9 +12,7 @@ public class InputManager : MonoBehaviour
     public event Action<InputAction.CallbackContext> OnSprint;
     public event Action<InputAction.CallbackContext> OnAim;
     public event Action<InputAction.CallbackContext> OnAttack;
-    public event Action<InputAction.CallbackContext> OnSubWeapon;
     public event Action<InputAction.CallbackContext> OnInventory;
-    public event Action<InputAction.CallbackContext> OnReload;
 
     void Awake()
     {

@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 public enum LevelState
 {
